@@ -60,7 +60,7 @@
     };
 };
 
-#kumagai追記　トラックボール操作上下左右逆転
+// kumagai追記　トラックボール操作上下左右逆転
 &pointing_device {
     x-invert = <1>;
     y-invert = <1>;
