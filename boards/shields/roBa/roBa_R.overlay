@@ -1,20 +1,21 @@
 #include "roBa.dtsi"
 
+/* 行列オフセット（roBa.dtsi 内に default_transform ラベルがある前提） */
 &default_transform {
     col-offset = <6>;
 };
 
+/* キースキャン（&xiao_d ラベルが存在する前提） */
 &kscan0 {
-        col-gpios
-            = <&xiao_d 10 GPIO_ACTIVE_HIGH>
-            , <&xiao_d 9 GPIO_ACTIVE_HIGH>
-            , <&xiao_d 8 GPIO_ACTIVE_HIGH>
-            , <&xiao_d 7 GPIO_ACTIVE_HIGH>
-            , <&gpio0 10 GPIO_ACTIVE_HIGH>
-            ;
+    col-gpios = <&xiao_d 10 GPIO_ACTIVE_HIGH>,
+                <&xiao_d  9 GPIO_ACTIVE_HIGH>,
+                <&xiao_d  8 GPIO_ACTIVE_HIGH>,
+                <&xiao_d  7 GPIO_ACTIVE_HIGH>,
+                <&gpio0  10 GPIO_ACTIVE_HIGH>;
 };
 
-/ {
+/* トラックボールの input-listener（roBa.dtsi に trackball 定義がある前提） */
+ / {
     trackball_listener {
         status = "okay";
         compatible = "zmk,input-listener";
@@ -22,27 +23,30 @@
     };
 };
 
+/* UART 不要なら無効化（必要なら削除） */
+&xiao_serial { status = "disabled"; };
+
+/* ---- SPI ピン定義（実配線に合わせて要調整） ---- */
 &pinctrl {
     spi0_default: spi0_default {
         group1 {
-            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,
-                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                <NRF_PSEL(SPIM_MISO, 0, 4)>;
+            psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
+                    <NRF_PSEL(SPIM_MOSI, 0, 6)>,
+                    <NRF_PSEL(SPIM_MISO, 0, 7)>;
         };
     };
 
     spi0_sleep: spi0_sleep {
         group1 {
-            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,
-                <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                <NRF_PSEL(SPIM_MISO, 0, 4)>;
+            psels = <NRF_PSEL(SPIM_SCK,  0, 5)>,
+                    <NRF_PSEL(SPIM_MOSI, 0, 6)>,
+                    <NRF_PSEL(SPIM_MISO, 0, 7)>;
             low-power-enable;
         };
     };
 };
 
-&xiao_serial { status = "disabled"; };
-
+/* SPI0 + PMW3610（CS/IRQは実配線に合わせて） */
 &spi0 {
     status = "okay";
     compatible = "nordic,nrf-spim";
